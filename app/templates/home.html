@@ -3,9 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>Home - Weather App</title>
+    <link rel="stylesheet" href="static/style.css">
 </head>
 <body>
-    <h1>Welcome to the Home Page {{ nimi }}</h1>
+    <h1>TJTS5901 - Weather app</h1>
+    <p>Enter a city name to get the weather data</p>
+
+    <div class="container">
+
+        <div class="search-container">
+            <p>Enter a city name to get the weather data</p>
+            <form id="search-form" action="#">
+                <input type="text" name="city" placeholder="City name">
+                <button type="submit">Get weather</button>
+            </form>
+        </div>
+
+        <div class="previous-searches-container">
+            <h3>Previous searches</h3>
+            <ul id="previous-searches">
+                <li>City name - AVG °C</li>
+                <li>City name 2 - AVG °C</li>
+            </ul>
+        </div>
+    </div>
+    <div id="weather-data">
+        <div id="weather-data">
+            <h2>City name</h2>
+            <div id="card">
+                <span>Source 1: Temperature from weather-api</span><br>
+                <span>Source 2: Temperature from openweathermap-api</span><br>
+                <span>Average from both: AVG °C</span><br>
+                <span>Difference between both: °C</span>
+            </div>
+        </div>
 </body>
 </html>
