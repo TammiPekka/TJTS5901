@@ -17,11 +17,3 @@ def test_get_weather_data():
     city = "London"
     data = get_weather_data(city)
     
-<<<<<<< HEAD
-=======
-    # Testaa, että saatu data sisältää tarvittavat tiedot
-    assert "location" in data
-    assert "current" in data
-    assert data["location"]["name"] == city  # Varmistaa, että kaupunki on sama kuin syötteessä
-    assert "temp_c" in data["current"]  # Varmistaa, että lämpötila on mukana
->>>>>>> starter-UI
