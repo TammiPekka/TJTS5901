@@ -1,10 +1,13 @@
 from flask import Flask
+from flask import render_template
+import jinja2
 
 app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return "Hello, World!"
+    nimi = "Jukka"
+    return render_template("home.html", nimi=nimi)
 
 @app.route("/home")
 def health():
