@@ -1,9 +1,14 @@
 import requests
 import pytest
+import os 
+from dotenv import load_dotenv
 
+load_dotenv()
+
+WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
 # An example of a function that makes an API call
 def get_weather_data(city):
-    api_key = "994994fe63a749f181e101136251702"  # korvaa tämä WeatherAPI:n API-avaimella
+    api_key = WEATHER_API_KEY  # korvaa tämä WeatherAPI:n API-avaimella
     url = f"http://api.weatherapi.com/v1/current.json?key={api_key}&q={city}"
     response = requests.get(url)
     
@@ -16,4 +21,7 @@ def get_weather_data(city):
 def test_get_weather_data():
     city = "London"
     data = get_weather_data(city)
-    
+    return data
+
+if __name__ == "__main__":
+    print(test_get_weather_data())
