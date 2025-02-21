@@ -1,21 +1,26 @@
 from flask import Flask, request, jsonify
 import requests
-
+import os
+from dotenv import load_dotenv
 app = Flask(__name__)
 
-API_KEY = "YOUR_API_KEY"  # Change this to your own API key
+load_dotenv()
+
+OPEN_W_API_KEY = os.getenv("OPEN_W_API_KEY")  # Change this to your own API key
 BASE_URL = "http://api.openweathermap.org/data/2.5/weather"
 
+
 #Function that gets temperature uses given city, API_KEY and BASE_URL
-@app.route('/get_temperature', methods=['POST'])
+@app.route('/get_temperature', methods=['GET', 'POST'])
 def get_temperature():
-    city = request.form.get("city")  #Get name of the city from the request
+    city = request.form.get("city") if request.method == "POST" else request.args.get("city")
+
     if not city:
         return jsonify({"error": "City is required"}), 400  #Return error message if city is not given
     
     params = {
         'q': city,
-        'appid': API_KEY,
+        'appid': OPEN_W_API_KEY,
         'units': 'metric'
     }
 
