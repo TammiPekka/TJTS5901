@@ -20,6 +20,7 @@ def get_weather_data(api_key, url_template, city):
         raise Exception("API call failed")
     
     data = response.json()
+    #data1 = data #for testing purposes???
 
     if "current" in data:  # WeatherAPI
         return data["current"]["temp_c"]
