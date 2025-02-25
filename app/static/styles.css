@@ -5,56 +5,75 @@ body {
     padding: 0;
     box-sizing: border-box;
     background-color: #f4f4f9;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Header Style */
-h1 {
-margin-left: 10px;
+header {
+    width: 100%;
+    margin-left: 10px;
+    text-align: left;
 }
 
-/* Main Container Style */
+/* Main Layout */
 .container {
     display: flex;
-    flex-wrap: wrap;
-    margin: 20px;
+    height: calc(100vh - 80px); /* Subtract header height */
 }
 
-/* Search Form Container takes 50% width */
-.search-container {
+/* Left Section: Search & Weather Data */
+.left-section {
     flex: 1;
-    max-width: 50%;
-    padding-right: 20px;
+    max-width: 60%;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
 }
 
-/* Input field styling */
+/* Search Form Container */
+.search-container {
+    padding-bottom: 20px;
+}
+
+/* Search form layout */
+.search-container form {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+/* Input field */
 .search-container input[type="text"] {
+    flex: 1;
     width: 100%;
     padding: 10px;
     font-size: 16px;
     border: 1px solid #ccc;
-    border-radius: 5px;
+    border-radius: 5px 0 0 5px;
 }
 
 /* Button styling */
 .search-container button {
-    padding: 10px;
-    margin: 5px;
+    padding: 10px 15px;
     font-size: 16px;
     background-color: #3498db;
     color: white;
-    border: none;
-    border-radius: 5px;
+    border: 1px solid #3498db;
+    border-radius: 0 5px 5px 0;
     cursor: pointer;
+    transition: 0.3s;
 }
 
-/* Weather Data Section takes 50% width of screen */
+.search-container button:hover {
+    background-color: #2980b9;
+}
+
+/* Weather Data Section */
 #weather-data {
-    flex: 1;
-    max-width: 50%;
-    margin-top: 30px;
-    margin-left: 10px;
-    padding: 20px;
     background-color: white;
+    padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -67,59 +86,84 @@ margin-left: 10px;
     margin-top: 15px;
 }
 
-/* Right container for previous searches (flexible width) */
+/* Right Section: Previous Searches */
 .previous-searches-container {
-    flex: 1;
+    flex: 0.4;
     max-width: 40%;
-    padding-left: 20px;
-}
-
-
-.previous-searches-container h3 {
-    margin-left: 10px;
+    background-color: #ececec;
+    padding: 20px;
+    overflow-y: auto;
 }
 
 /* Styling for previous search list */
 #previous-searches {
     list-style-type: none;
     padding: 0;
-    margin-left: 10px;
 }
 
 #previous-searches li {
-    background-color: #ececec;
+    background-color: #ddd;
     padding: 10px;
     margin: 5px 0;
-
     border-radius: 5px;
 }
 
 /* Responsive Layout */
 @media (max-width: 768px) {
-    .search-container, .previous-searches-container, #weather-data {
-        max-width: 100%;
-        padding-right: 0;
-        padding-left: 0;
+    .container {
+        flex-direction: column;
+        height: auto;
     }
 
-    header {
-        padding: 15px;
+    .left-section, .previous-searches-container {
+        max-width: 100%;
     }
 }
 
 
+/* Ensure suggestions appear below input */
 #suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: calc(100% - 2px); /* Match input field width */
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
     list-style: none;
     padding: 0;
-    border: 1px solid #ccc;
-    max-width: 200px;
-    position: absolute;
-    background: white;
+    margin-top: 5px;
+    max-height: 250px;
+    overflow-y: auto;
+    z-index: 1000; /* Ensure it stays above other elements */
+    visibility: hidden; /* Instead of display: none */
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
 }
+
+/* Show suggestions when populated */
+#suggestions.show {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Suggestion list items */
 #suggestions li {
-    padding: 5px;
+    padding: 12px;
     cursor: pointer;
+    border-bottom: 1px solid #eee;
+    transition: background 0.3s, color 0.3s;
+    font-size: 16px;
 }
+
+/* Remove border from last item */
+#suggestions li:last-child {
+    border-bottom: none;
+}
+
+/* Hover effect */
 #suggestions li:hover {
-    background: lightgray;
+    background: #3498db;
+    color: white;
 }
