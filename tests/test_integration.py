@@ -25,3 +25,7 @@ def test_weather_api_ok():
     data = get_weather_data(WEATHER_API_KEY, url_weather, city)  # Converts the JSON response into a Python dictionary to be used in the tests
     # Test that the returned data contains the necessary information from WeatherAPI
     assert isinstance(data, float)  # Ensure the temperature is a float
+
+    data1 = get_weather_data(OPEN_W_API_KEY, url_open, city)  # Converts the JSON response into a Python dictionary to be used in the tests
+    # Test that the returned data contains the necessary information from WeatherAPI
+    assert isinstance(data1, float)  # Ensure the temperature is a float
