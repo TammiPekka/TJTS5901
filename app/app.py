@@ -31,6 +31,7 @@ def tester():
 @app.route("/get_cities")
 def get_cities():
     query = request.args.get("q", "")
+    #query = "hel"
     if not query:
         return jsonify([])
 
@@ -39,7 +40,7 @@ def get_cities():
 
     if response.status_code == 200:
         cities = response.json()
-        suggestions = [{"name": city["name"], "country": city["country"]} for city in cities]
+        suggestions = [{"name": city["name"], "country": city["country"]} for city in cities[:5]]
         return jsonify(suggestions)
     
     return jsonify([]), 500  # Return empty list on failure
