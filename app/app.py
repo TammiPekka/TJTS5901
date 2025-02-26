@@ -7,6 +7,7 @@ import os
 from dotenv import load_dotenv
 
 sys.path.append("app")
+from utils import average_temperature, temperature_difference
 from test_weather_api import get_weather_data
 from api_openw import get_open_data
 
@@ -28,6 +29,8 @@ def home():
 
     temperature_weather = None
     temperature_open = None
+    avg = None
+    dif = None
 
     if city:
         # Get weather data from WeatherAPI
@@ -38,9 +41,13 @@ def home():
         data_open = get_open_data(city)
         # Extract the temperature from the data
         temperature_open = data_open["main"]["temp"] - 273.15
-        
+        # Count average of two temperatures
+        avg = average_temperature(temperature_weather, temperature_open)
+        # Return difference between two temperatures
+        dif = temperature_difference(temperature_weather, temperature_open)
+
     # Render the home.html template with the data
-    return render_template("home.html", nimi=nimi, temperature_weather=temperature_weather, temperature_open=temperature_open)
+    return render_template("home.html", nimi=nimi, city=city, temperature_weather=temperature_weather, temperature_open=temperature_open, avg=avg, dif=dif)
 
 @app.route("/home")
 def health():
