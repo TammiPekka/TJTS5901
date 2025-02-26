@@ -5,10 +5,12 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Load the API keys from the .env file
 WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
-# An example of a function that makes an API call
+
+# A function that makes an API call to WeatherAPI
 def get_weather_data(city):
-    api_key = WEATHER_API_KEY  # korvaa tämä WeatherAPI:n API-avaimella
+    api_key = WEATHER_API_KEY 
     url = f"http://api.weatherapi.com/v1/current.json?key={api_key}&q={city}"
     response = requests.get(url)
     
