@@ -40,11 +40,11 @@ def home():
         # Get weather data from OpenWeatherMap API
         data_open = get_open_data(city)
         # Extract the temperature from the data
-        temperature_open = data_open["main"]["temp"] - 273.15
+        temperature_open = round(data_open["main"]["temp"] - 273.15, 2)
         # Count average of two temperatures
-        avg = average_temperature(temperature_weather, temperature_open)
+        avg = round(average_temperature(temperature_weather, temperature_open), 3)
         # Return difference between two temperatures
-        dif = temperature_difference(temperature_weather, temperature_open)
+        dif = round(temperature_difference(temperature_weather, temperature_open), 3)
 
     # Render the home.html template with the data
     return render_template("home.html", nimi=nimi, city=city, temperature_weather=temperature_weather, temperature_open=temperature_open, avg=avg, dif=dif)
