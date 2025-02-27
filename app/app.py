@@ -1,6 +1,6 @@
 import sys
 from flask import Flask
-from flask import render_template, request, jsonify
+from flask import render_template, request, jsonify, session
 import requests
 import jinja2
 import os
@@ -12,13 +12,13 @@ from test_weather_api import get_weather_data
 from api_openw import get_open_data
 
 app = Flask(__name__)
-
 load_dotenv()
 
 # Load the API keys from the .env file
 OPEN_W_API_KEY = os.getenv("OPEN_W_API_KEY")
 WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
-
+app.secret_key = os.getenv("SECRET_KEY") 
+#TODO: handle when input is invalid city or empty
 @app.route("/")
 def home():
     nimi = "Jukka"
@@ -46,17 +46,29 @@ def home():
         # Return difference between two temperatures
         dif = round(temperature_difference(temperature_weather, temperature_open), 3)
 
+    #store the seacrch history
+    if "search_history" not in session:
+        session["search_history"] = []
+    if city:
+        session["search_history"].insert(0, {"city":city, "avg":avg})
+        session.modified = True
+
+    search_history = session.get("search_history", [])
+    print(search_history)
+
     # Render the home.html template with the data
-    return render_template("home.html", nimi=nimi, city=city, temperature_weather=temperature_weather, temperature_open=temperature_open, avg=avg, dif=dif)
+    return render_template("home.html", 
+                           nimi=nimi,
+                           city=city, 
+                           temperature_weather=temperature_weather, 
+                           temperature_open=temperature_open, 
+                           avg=avg, 
+                           dif=dif,
+                           search_history=search_history)
 
 @app.route("/home")
 def health():
     return "OK"
-
-@app.route("/testing")
-def tester():
-    return "testing endpoint, aasd,asdf,asd, test"
-
 
 @app.route("/get_cities")
 def get_cities():

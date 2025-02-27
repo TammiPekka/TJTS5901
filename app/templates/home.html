@@ -45,9 +45,9 @@
         <div class="previous-searches-container">
             <h3>Previous Searches</h3>
             <ul id="previous-searches">
-                <!-- List of previous searches -->
-                <li>City name - AVG °C</li>
-                <li>City name 2 - AVG °C</li>
+                {% for search in search_history %}
+                    <li>{{ search.city }} - {{ search.avg }}</li>
+                {% endfor %}
             </ul>
         </div>
 
