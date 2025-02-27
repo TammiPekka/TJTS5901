@@ -1,3 +1,4 @@
+import sys
 from flask import Flask
 from flask import render_template, request, jsonify
 import requests
@@ -5,19 +6,48 @@ import jinja2
 import os
 from dotenv import load_dotenv
 
+sys.path.append("app")
+from utils import average_temperature, temperature_difference
+from test_weather_api import get_weather_data
+from api_openw import get_open_data
+
 app = Flask(__name__)
 
 load_dotenv()
 
+# Load the API keys from the .env file
 OPEN_W_API_KEY = os.getenv("OPEN_W_API_KEY")
-BASE_URL = "http://api.openweathermap.org/data/2.5/weather"
 WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
 
 @app.route("/")
 def home():
     nimi = "Jukka"
+    city = request.args.get("city", "")
 
-    return render_template("home.html", nimi=nimi)
+    #if "city" in request.args:
+    #    city = request.args["city"]
+
+    temperature_weather = None
+    temperature_open = None
+    avg = None
+    dif = None
+
+    if city:
+        # Get weather data from WeatherAPI
+        data_weather = get_weather_data(city)
+        # Extract the temperature from the data
+        temperature_weather = data_weather["current"]["temp_c"]
+        # Get weather data from OpenWeatherMap API
+        data_open = get_open_data(city)
+        # Extract the temperature from the data
+        temperature_open = round(data_open["main"]["temp"] - 273.15, 2)
+        # Count average of two temperatures
+        avg = round(average_temperature(temperature_weather, temperature_open), 3)
+        # Return difference between two temperatures
+        dif = round(temperature_difference(temperature_weather, temperature_open), 3)
+
+    # Render the home.html template with the data
+    return render_template("home.html", nimi=nimi, city=city, temperature_weather=temperature_weather, temperature_open=temperature_open, avg=avg, dif=dif)
 
 @app.route("/home")
 def health():
@@ -46,27 +76,5 @@ def get_cities():
     return jsonify([]), 500  # Return empty list on failure
 
 
-@app.route('/get_temperature', methods=['GET', 'POST'])
-def get_temperature():
-    city = request.form.get("city") if request.method == "POST" else request.args.get("city")
-
-    if not city:
-        return jsonify({"error": "City is required"}), 400  #Return error message if city is not given
-    
-    params = {
-        'q': city,
-        'appid': OPEN_W_API_KEY,
-        'units': 'metric'
-    }
-
-    response = requests.get(BASE_URL, params=params)
-    data = response.json()
-
-    if response.status_code == 200:
-        return jsonify({"temperature1": data["main"]["temp"]})  #Return temperature of the city in json format
-    else:
-        return jsonify({"error": data.get("message", "Unknown error")}), response.status_code
-
-
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5001)
