@@ -27,6 +27,7 @@ jobs:
           docker run -d -p 5000:5000 --name app-container  \
             -e WEATHER_API_KEY=${{ secrets.WEATHER_API_KEY }} \
             -e OPEN_W_API_KEY=${{ secrets.OPEN_W_API_KEY }} \
+            -e SECRET_KEY=${{ secrets.SECRET_KEY }} \
             python-app
           sleep 5  # Give the server time to start
 
