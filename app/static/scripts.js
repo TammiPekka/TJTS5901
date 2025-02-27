@@ -68,3 +68,33 @@ document.addEventListener("click", function (event) {
     }
 });
 });
+
+//handle clickin city on seach history to get more details on that search
+document.addEventListener("DOMContentLoaded", function () {
+    let previousSearches = document.getElementById("previous-searches");
+
+    if (previousSearches) {
+        previousSearches.addEventListener("click", function (event) {
+            let clickedElement = event.target;
+            if (clickedElement.classList.contains("search-item")) {
+                let cityName = clickedElement.getAttribute("data-city");
+                fetchWeatherForCity(cityName);
+            }
+        });
+    }
+    function fetchWeatherForCity(city) {
+        fetch(`/?city=${encodeURIComponent(city)}`)
+            .then(response => response.text())
+            .then(html => {
+                let parser = new DOMParser();
+                let doc = parser.parseFromString(html, "text/html");
+
+                // Extract updated weather info
+                let updatedWeatherData = doc.getElementById("weather-data").innerHTML;
+
+                // Update the current weather section dynamically
+                document.getElementById("weather-data").innerHTML = updatedWeatherData;
+            })
+            .catch(error => console.error("Error fetching weather details:", error));
+    }
+});

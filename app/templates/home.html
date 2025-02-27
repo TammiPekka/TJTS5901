@@ -46,7 +46,7 @@
             <h3>Previous Searches</h3>
             <ul id="previous-searches">
                 {% for search in search_history %}
-                    <li>{{ search.city }} - {{ search.avg }}</li>
+                    <li class="search-item" data-city="{{ search.city }}">{{ search.city }} - {{ search.avg }}°C</li>
                 {% endfor %}
             </ul>
         </div>
