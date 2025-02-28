@@ -50,7 +50,13 @@ def home():
     if "search_history" not in session:
         session["search_history"] = []
     if city:
-        session["search_history"].insert(0, {"city":city, "avg":avg})
+        session["search_history"].insert(0, 
+                                {"city":city,
+                                 "temperature_weather":temperature_weather,
+                                 "temperature_open":temperature_open, 
+                                 "avg":avg,
+                                 "dif":dif
+        })
         session.modified = True
 
     search_history = session.get("search_history", [])

@@ -2,99 +2,88 @@ document.addEventListener("DOMContentLoaded", function () {
     let debounceTimer;
     let searchInput = document.getElementById("search");
     let suggestionsList = document.getElementById("suggestions");
+    let previousSearches = document.getElementById("previous-searches");
 
     if (!searchInput || !suggestionsList) {
         console.error("Search input or suggestions list not found!");
         return;
     }
 
-searchInput.addEventListener("input", function() {
-    clearTimeout(debounceTimer);
-    let query = this.value.trim();
-    //empty the list if input is empty
-    if (query.length === 0) {
-        while (suggestionsList.firstChild) {
-            suggestionsList.removeChild(suggestionsList.firstChild);
+    // Handle Search Input and Suggestions
+    searchInput.addEventListener("input", function () {
+        clearTimeout(debounceTimer);
+        let query = this.value.trim();
+
+        if (query.length === 0) {
+            suggestionsList.innerHTML = ""; // Clear the list
+            return;
         }
-        return;
-    }
 
-    if (query.length < 2) return;
+        if (query.length < 2) return;
 
-    debounceTimer = setTimeout(() => {
-        fetch(`/get_cities?q=${query}`)
-        .then(response => response.json())
-        .then(data => {
-            //console.log("Received data:", data);
-            while (suggestionsList.firstChild) {
-                suggestionsList.removeChild(suggestionsList.firstChild);
-            }
+        debounceTimer = setTimeout(() => {
+            fetch(`/get_cities?q=${query}`)
+                .then(response => response.json())
+                .then(data => {
+                    suggestionsList.innerHTML = ""; // Clear previous suggestions
 
-            if (data.length === 0) {
-                let noResultItem = document.createElement("li");
-                noResultItem.textContent = "No suggestions found";
-                suggestionsList.appendChild(noResultItem);
-            } else {
-                data.slice(0, 5).forEach(city => {
-                    let listItem = document.createElement("li");
-                    listItem.textContent = `${city.name}, ${city.country}`;
-                    listItem.setAttribute("role", "option"); // Accessibility improvement
-                    listItem.addEventListener("click", function () {
-                        searchInput.value = city.name + ", " + city.country;
-                        while (suggestionsList.firstChild) {
-                            suggestionsList.removeChild(suggestionsList.firstChild);
-                        }
-                        suggestionsList.classList.remove("show"); // Hide after selection
-                    });
-                    suggestionsList.appendChild(listItem);
-                });
-            }
+                    if (data.length === 0) {
+                        let noResultItem = document.createElement("li");
+                        noResultItem.textContent = "No suggestions found";
+                        suggestionsList.appendChild(noResultItem);
+                    } else {
+                        data.slice(0, 5).forEach(city => {
+                            let listItem = document.createElement("li");
+                            listItem.textContent = `${city.name}, ${city.country}`;
+                            listItem.setAttribute("role", "option");
+                            listItem.classList.add("suggestion-item");
 
-            // Show only if there are suggestions
-            if (suggestionsList.childNodes.length > 0) {
-                suggestionsList.classList.add("show");
-            } else {
-                suggestionsList.classList.remove("show");
-            }
-        })
-        .catch(error => console.error("Error fetching suggestions:", error));
-    }, 300);
-});
+                            listItem.addEventListener("click", function () {
+                                searchInput.value = city.name + ", " + city.country;
+                                suggestionsList.innerHTML = ""; // Clear suggestions
+                                suggestionsList.classList.remove("show");
+                            });
 
-// Hide suggestions when clicking outside
-document.addEventListener("click", function (event) {
-    if (!searchInput.contains(event.target) && !suggestionsList.contains(event.target)) {
-        suggestionsList.classList.remove("show");
-    }
-});
-});
+                            suggestionsList.appendChild(listItem);
+                        });
+                    }
 
-//handle clickin city on seach history to get more details on that search
-document.addEventListener("DOMContentLoaded", function () {
-    let previousSearches = document.getElementById("previous-searches");
+                    suggestionsList.classList.toggle("show", suggestionsList.childNodes.length > 0);
+                })
+                .catch(error => console.error("Error fetching suggestions:", error));
+        }, 300);
+    });
 
+    // **Handle Clicking Outside to Hide Suggestions**
+    document.addEventListener("click", function (event) {
+        if (!searchInput.contains(event.target) && !suggestionsList.contains(event.target)) {
+            suggestionsList.classList.remove("show");
+        }
+    });
+
+    // Handle Clicking on Previous Searches
     if (previousSearches) {
         previousSearches.addEventListener("click", function (event) {
             let clickedElement = event.target;
+
             if (clickedElement.classList.contains("search-item")) {
                 let cityName = clickedElement.getAttribute("data-city");
-                fetchWeatherForCity(cityName);
+                let tempWeather = clickedElement.getAttribute("data-temp-weather");
+                let tempOpen = clickedElement.getAttribute("data-temp-open");
+                let avg = clickedElement.getAttribute("data-avg");
+                let dif = clickedElement.getAttribute("data-dif");
+
+                updateWeatherDisplay(cityName, tempWeather, tempOpen, avg, dif);
             }
         });
     }
-    function fetchWeatherForCity(city) {
-        fetch(`/?city=${encodeURIComponent(city)}`)
-            .then(response => response.text())
-            .then(html => {
-                let parser = new DOMParser();
-                let doc = parser.parseFromString(html, "text/html");
 
-                // Extract updated weather info
-                let updatedWeatherData = doc.getElementById("weather-data").innerHTML;
-
-                // Update the current weather section dynamically
-                document.getElementById("weather-data").innerHTML = updatedWeatherData;
-            })
-            .catch(error => console.error("Error fetching weather details:", error));
+    // Function to Update Weather Display without Reloading
+    function updateWeatherDisplay(city, tempWeather, tempOpen, avg, dif) {
+        document.querySelector("#weather-data h2:nth-of-type(2)").textContent = city;
+        document.getElementById("temp1").textContent = tempWeather;
+        document.getElementById("temp2").textContent = tempOpen;
+        document.getElementById("avg1").textContent = avg;
+        document.getElementById("dif1").textContent = dif;
     }
 });
