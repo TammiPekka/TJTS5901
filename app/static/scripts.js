@@ -87,3 +87,24 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("dif1").textContent = dif;
     }
 });
+
+// Handle removing previous searches
+document.addEventListener("DOMContentLoaded", function () {
+    let clearHistoryButton = document.getElementById("clear-history");
+    let previousSearchesList = document.getElementById("previous-searches");
+
+    if (clearHistoryButton) {
+        clearHistoryButton.addEventListener("click", function () {
+            fetch("/clear_history", { method: "POST" }) // Call Flask route
+                .then(response => {
+                    if (response.ok) {
+                        // Remove each child (list item) one by one
+                        while (previousSearchesList.firstChild) {
+                            previousSearchesList.removeChild(previousSearchesList.firstChild);
+                        }
+                    }
+                })
+                .catch(error => console.error("Error clearing history:", error));
+        });
+    }
+});

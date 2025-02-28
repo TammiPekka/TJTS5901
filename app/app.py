@@ -76,6 +76,12 @@ def home():
 def health():
     return "OK"
 
+@app.route("/clear_history", methods=["POST"])
+def clear_history():
+    session["search_history"] = []
+    session.modified = True
+    return "", 204
+
 @app.route("/get_cities")
 def get_cities():
     query = request.args.get("q", "")
