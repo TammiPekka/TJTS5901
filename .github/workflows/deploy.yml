@@ -30,9 +30,10 @@ jobs:
 
       - name: Create Kubernetes Secret for GCP Key
         run: |
-          echo "${{ secrets.GCP_SA_KEY }}" | base64 --decode > key.json
+          echo '${{ secrets.GCP_SA_KEY }}' > key.json  
           kubectl create secret generic gcp-sa-key --from-file=key.json --dry-run=client -o yaml | kubectl apply -f -
           rm key.json
+
         
       - name: Create ConfigMap for API Keys
         run: |
