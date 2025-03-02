@@ -23,6 +23,9 @@ jobs:
       - name: Configure Docker Authentication
         run: gcloud auth configure-docker europe-west1-docker.pkg.dev
 
+      - name: Get GKE Credentials  
+        run: gcloud container clusters get-credentials flask-cluster --region europe-west1
+
       - name: Build and Push Docker Image
         run: |
           docker build -t europe-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/flask-repo/flask-app:latest .
@@ -44,6 +47,4 @@ jobs:
             --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Deploy to GKE
-        run: |
-          gcloud container clusters get-credentials flask-cluster --region europe-west1
-          kubectl apply -f deployment.yaml
+        run: kubectl apply -f deployment.yaml
