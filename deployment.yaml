@@ -21,6 +21,9 @@ spec:
           envFrom:
             - configMapRef:
                 name: flask-env
+          env:
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: "/secrets/key.json"
           volumeMounts:
             - name: gcp-secret-volume
               mountPath: "/secrets"
@@ -36,9 +39,9 @@ kind: ConfigMap
 metadata:
   name: flask-env
 data:
-  OPEN_W_API_KEY: "your-api-key-here"
-  SECRET_KEY: "your-secret-key-here"
-  WEATHER_API_KEY: "your-weather-api-key-here"
+  OPEN_W_API_KEY: "dummy-placeholder"
+  SECRET_KEY: "dummy-placeholder"
+  WEATHER_API_KEY: "dummy-placeholder"
 
 ---
 apiVersion: v1
