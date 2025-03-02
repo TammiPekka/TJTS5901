@@ -21,14 +21,26 @@ jobs:
         uses: google-github-actions/setup-gcloud@v2
 
       - name: Configure Docker Authentication
-        run: gcloud auth configure-docker europe-west1-docker.pkg.dev  # Change region if needed
+        run: gcloud auth configure-docker europe-west1-docker.pkg.dev
 
       - name: Build and Push Docker Image
         run: |
           docker build -t europe-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/flask-repo/flask-app:latest .
           docker push europe-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/flask-repo/flask-app:latest
 
+      - name: Create Kubernetes Secret for GCP Key
+        run: |
+          echo "${{ secrets.GCP_SA_KEY }}" | kubectl create secret generic gcp-sa-key --from-file=key.json=/dev/stdin --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Create ConfigMap for API Keys
+        run: |
+          kubectl create configmap flask-env \
+            --from-literal=OPEN_W_API_KEY=${{ secrets.OPEN_W_API_KEY }} \
+            --from-literal=SECRET_KEY=${{ secrets.SECRET_KEY }} \
+            --from-literal=WEATHER_API_KEY=${{ secrets.WEATHER_API_KEY }} \
+            --dry-run=client -o yaml | kubectl apply -f -
+
       - name: Deploy to GKE
         run: |
-          gcloud container clusters get-credentials flask-cluster --region europe-west1  # Change region if needed
+          gcloud container clusters get-credentials flask-cluster --region europe-west1
           kubectl apply -f deployment.yaml

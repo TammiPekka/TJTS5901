@@ -13,11 +13,32 @@ spec:
         app: flask-app
     spec:
       containers:
-      - name: flask-app
-        image: europe-west1-docker.pkg.dev/tjts5901-452510/flask-repo/flask-app:latest
-        imagePullPolicy: Always  # <-- THIS IS FIXED
-        ports:
-        - containerPort: 5000
+        - name: flask-app
+          image: europe-west1-docker.pkg.dev/tjts5901-452510/flask-repo/flask-app:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5000
+          envFrom:
+            - configMapRef:
+                name: flask-env
+          volumeMounts:
+            - name: gcp-secret-volume
+              mountPath: "/secrets"
+              readOnly: true
+      volumes:
+        - name: gcp-secret-volume
+          secret:
+            secretName: gcp-sa-key
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: flask-env
+data:
+  OPEN_W_API_KEY: "your-api-key-here"
+  SECRET_KEY: "your-secret-key-here"
+  WEATHER_API_KEY: "your-weather-api-key-here"
 
 ---
 apiVersion: v1
