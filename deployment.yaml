@@ -35,16 +35,6 @@ spec:
 
 ---
 apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: flask-env
-data:
-  OPEN_W_API_KEY: "dummy-placeholder"
-  SECRET_KEY: "dummy-placeholder"
-  WEATHER_API_KEY: "dummy-placeholder"
-
----
-apiVersion: v1
 kind: Service
 metadata:
   name: flask-service
