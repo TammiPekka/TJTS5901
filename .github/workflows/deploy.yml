@@ -45,12 +45,15 @@ jobs:
         
       - name: Create ConfigMap for API Keys
         run: |
-          echo "OPEN_W_API_KEY=${{ secrets.OPEN_W_API_KEY }}" > config.env
-          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> config.env
-          echo "WEATHER_API_KEY=${{ secrets.WEATHER_API_KEY }}" >> config.env
-          kubectl create configmap flask-env --from-env-file=config.env --dry-run=client -o yaml | kubectl apply -f -
-          rm config.env
+          kubectl delete configmap flask-env --ignore-not-found
+          kubectl create configmap flask-env \
+            --from-literal=OPEN_W_API_KEY="${{ secrets.OPEN_W_API_KEY }}" \
+            --from-literal=SECRET_KEY="${{ secrets.SECRET_KEY }}" \
+            --from-literal=WEATHER_API_KEY="${{ secrets.WEATHER_API_KEY }}"
 
 
       - name: Deploy to GKE
         run: kubectl apply -f deployment.yaml
+
+      - name: Restart Deployment
+        run: kubectl rollout restart deployment flask-app
