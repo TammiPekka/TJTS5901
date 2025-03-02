@@ -4,7 +4,7 @@ from app.test_weather_api import get_weather_data
 from app.api_openw import get_open_data
 from app.app import app
 
-BASE_URL = "http://localhost:5001"  
+BASE_URL = "http://localhost:5000"  
 BASE_URL_WEATHER = "http://api.openweathermap.org/data/2.5/weather"
 
 #Testing basic functionality of the app
