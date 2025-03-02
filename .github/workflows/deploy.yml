@@ -19,9 +19,17 @@ jobs:
 
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
-
+      
+      - name: Install gke-gcloud-auth-plugin
+        run: |
+          gcloud components install gke-gcloud-auth-plugin
+          gcloud components update
+      
       - name: Configure Docker Authentication
         run: gcloud auth configure-docker europe-west1-docker.pkg.dev
+          
+      - name: Get GKE Credentials  
+        run: gcloud container clusters get-credentials flask-cluster --region europe-west1
 
       - name: Build and Push Docker Image
         run: |
@@ -30,19 +38,19 @@ jobs:
 
       - name: Create Kubernetes Secret for GCP Key
         run: |
-          echo "${{ secrets.GCP_SA_KEY }}" | base64 --decode > key.json
+          echo '${{ secrets.GCP_SA_KEY }}' > key.json  
           kubectl create secret generic gcp-sa-key --from-file=key.json --dry-run=client -o yaml | kubectl apply -f -
           rm key.json
+
         
       - name: Create ConfigMap for API Keys
         run: |
-          kubectl create configmap flask-env \
-            --from-literal=OPEN_W_API_KEY=${{ secrets.OPEN_W_API_KEY }} \
-            --from-literal=SECRET_KEY=${{ secrets.SECRET_KEY }} \
-            --from-literal=WEATHER_API_KEY=${{ secrets.WEATHER_API_KEY }} \
-            --dry-run=client -o yaml | kubectl apply -f -
+          echo "OPEN_W_API_KEY=${{ secrets.OPEN_W_API_KEY }}" > config.env
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> config.env
+          echo "WEATHER_API_KEY=${{ secrets.WEATHER_API_KEY }}" >> config.env
+          kubectl create configmap flask-env --from-env-file=config.env --dry-run=client -o yaml | kubectl apply -f -
+          rm config.env
+
 
       - name: Deploy to GKE
-        run: |
-          gcloud container clusters get-credentials flask-cluster --region europe-west1
-          kubectl apply -f deployment.yaml
+        run: kubectl apply -f deployment.yaml
