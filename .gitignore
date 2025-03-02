@@ -54,3 +54,8 @@ htmlcov/
 
 # GitHub Actions
 .github/workflows/*.yml
+
+gcloudjson.json
+
+deployment.yaml
+service-key.json
