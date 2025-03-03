@@ -88,13 +88,15 @@ header {
 
 /* Right Section: Previous Searches */
 .previous-searches-container {
-    flex: 0.4;
-    max-width: 40%;
-    background-color: #ececec;
-    padding: 20px;
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    align-items: flex-start; /* Align title to left */
+    gap: 10px; /* Space between elements */
+    background-color: #f0f0f0;
+    padding: 15px;
+    border-radius: 8px;
+    min-width: 20%;
 }
-
 /* Styling for previous search list */
 #previous-searches {
     list-style-type: none;
@@ -166,4 +168,40 @@ header {
 #suggestions li:hover {
     background: #3498db;
     color: white;
+}
+#clear-history {
+    align-self: flex-end; /* Move button to right */
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#clear-history:hover {
+    background-color: #e60000;
+    transform: scale(1.05);
+}
+
+#previous-searches {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+.search-item {
+    background: #d1d1d1;
+    padding: 8px;
+    margin-bottom: 5px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.search-item:hover {
+    background: #bfbfbf;
 }
