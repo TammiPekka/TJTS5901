@@ -28,6 +28,8 @@ def home():
     temperature_open = None
     avg = None
     dif = None
+    lon = None
+    lat = None
     #Search history, save result to session
     if "search_history" not in session:
         session["search_history"] = []
@@ -71,15 +73,17 @@ def home():
                 temperature_open = "Connection error with API"
 
         #if lon and lat are in the data from weatherAPI #this is to make sure that we get the right city from same country
-        try:
-            data_open = get_open_datalat(lat, lon)
-            temperature_open = round(data_open["main"]["temp"], 2)
-        except ValueError as e:
-            temperature_open = "City not found"
-        except KeyError as e:
-            temperature_open = "API key is invalid"
-        except Exception as e:
-            temperature_open = "Connection error with API"
+        "If lon is not None, get the temperature from OpenWeatherMap API using the lon and lat"
+        if lon is not None:
+            try:
+                data_open = get_open_datalat(lat, lon)
+                temperature_open = round(data_open["main"]["temp"], 2)
+            except ValueError as e:
+                temperature_open = "City not found"
+            except KeyError as e:
+                temperature_open = "API key is invalid"
+            except Exception as e: 
+                temperature_open = "Connection error with API THIS"
 
 
         # If both API calls return City not found, city is not found
@@ -93,6 +97,17 @@ def home():
         except (ValueError, TypeError):
             avg = temperature_open
             dif = ""
+
+            if city:
+                session["search_history"].insert(0, 
+                                        {"city":city,
+                                        "temperature_weather":temperature_weather,
+                                        "temperature_open":temperature_open, 
+                                        "avg":avg,
+                                        "dif":dif
+                })
+                session.modified = True
+
             return render_template("home.html", city=city, temperature_weather=temperature_weather, temperature_open=temperature_open, avg=avg, dif=dif, search_history=search_history)
         # If temperature_open in not a number, return the WeatherAPI temperature as the average for search history
         try:
@@ -100,6 +115,16 @@ def home():
         except (ValueError, TypeError):
             avg = temperature_weather
             dif = ""
+
+            if city:
+                session["search_history"].insert(0, 
+                                        {"city":city,
+                                        "temperature_weather":temperature_weather,
+                                        "temperature_open":temperature_open, 
+                                        "avg":avg,
+                                        "dif":dif
+                })
+                session.modified = True
             return render_template("home.html", city=city, temperature_weather=temperature_weather, temperature_open=temperature_open, avg=avg, dif=dif, search_history=search_history)
 
         else:    
