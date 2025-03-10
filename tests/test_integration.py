@@ -24,6 +24,25 @@ def test_weather_api_ok():
     assert data["location"]["name"] == city  # Ensures that the returned city matches the input city
     assert "temp_c" in data["current"]  # Ensures that the data includes the temperature ('temp_c') in the current weather details
 
+def test_weather_api_fail():
+    # Test for a city that does not exist
+    city = "H"
+    try:
+        data = get_weather_data(city)
+    except ValueError as e:
+        data = {"error":{"code":1006}}
+    assert data.get("error").get("code") == 1006
+
+
+def test_open_api_fail():
+    # Test for a city that does not exist
+    city = "H"
+    try:
+        data = get_open_data(city)
+    except ValueError as e:
+        data = {"cod":"404"}
+    assert data.get("cod") == "404"
+ 
 
 #Testing open weather api functionality
 def test_open_api_ok():

@@ -19,32 +19,79 @@ OPEN_W_API_KEY = os.getenv("OPEN_W_API_KEY")
 WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
 app.secret_key = os.getenv("SECRET_KEY") 
 #TODO: handle when input is invalid city or empty
+
 @app.route("/")
 def home():
     nimi = "Jukka"
-    city = request.args.get("city", "")
-
-    #if "city" in request.args:
-    #    city = request.args["city"]
+    city = ""
 
     temperature_weather = None
     temperature_open = None
     avg = None
     dif = None
 
+    # Get the city from the input field
+    city = request.args.get("city", "")
+    #if city is empty:
+    if city == "":
+        return render_template("home.html", nimi=nimi, city="Enter city", temperature_weather="", temperature_open="", avg="", dif="")
+    #if city is not "":
     if city:
-        # Get weather data from WeatherAPI
-        data_weather = get_weather_data(city)
-        # Extract the temperature from the data
-        temperature_weather = data_weather["current"]["temp_c"]
-        # Get weather data from OpenWeatherMap API
-        data_open = get_open_data(city)
-        # Extract the temperature from the data
-        temperature_open = round(data_open["main"]["temp"] - 273.15, 2)
-        # Count average of two temperatures
-        avg = round(average_temperature(temperature_weather, temperature_open), 3)
-        # Return difference between two temperatures
-        dif = round(temperature_difference(temperature_weather, temperature_open), 3)
+        # Try to get the weather data from the API, if there is a connection error, return an error message
+        try:
+            # Get weather data from WeatherAPI, if there is a connection error put error message in temperature_weather
+            data_weather = get_weather_data(city)
+            # Extract the temperature from the data
+            temperature_weather = data_weather["current"]["temp_c"]
+        # Catch the exceptions
+        except ValueError as e:
+            temperature_weather = "City not found"
+        except KeyError as e:
+            temperature_weather = "API key is invalid"
+        except Exception as e:
+            temperature_weather = "Connection error with API"
+
+        try:
+            # Get weather data from OpenWeatherMap API, if there is a connection error put error message in temperature_open
+            data_open = get_open_data(city)
+            # Extract the temperature from the data
+            temperature_open = round(data_open["main"]["temp"] - 273.15, 2) # Convert temperature from Kelvin to Celsius #TODO check if there is better way to chance kelvin to celsius
+        # Catch the exceptions
+        except ValueError as e:
+            temperature_open = "City not found"
+        except KeyError as e:
+            temperature_open = "API key is invalid"
+        except Exception as e:
+            temperature_open = "Connection error with API"
+
+        # If both API calls return City not found, city is not found
+        if temperature_weather == "City not found" and temperature_open == "City not found":
+            city = "City not found"
+            return render_template("home.html", nimi=nimi, city=city, temperature_weather="-", temperature_open="-", avg="-", dif="-")  
+    
+        # If temperature_weathet in not a number, return the OpenWeatherMap temperature as the average for search history
+        try:
+            temperature_weather = float(temperature_weather)
+        except (ValueError, TypeError):
+            avg = temperature_open
+            dif = ""
+            return render_template("home.html", nimi=nimi, city=city, temperature_weather=temperature_weather, temperature_open=temperature_open, avg=avg, dif=dif)
+        # If temperature_open in not a number, return the WeatherAPI temperature as the average for search history
+        try:
+            temperature_open = float(temperature_open)
+        except (ValueError, TypeError):
+            avg = temperature_weather
+            dif = ""
+            return render_template("home.html", nimi=nimi, city=city, temperature_weather=temperature_weather, temperature_open=temperature_open, avg=avg, dif=dif)
+
+        else:    
+            # Count average of two temperatures
+            avg = round(average_temperature(temperature_weather, temperature_open), 3)
+            # Return difference between two temperatures
+            dif = round(temperature_difference(temperature_weather, temperature_open), 3)
+            # Render the home.html template with the data
+            return render_template("home.html", nimi=nimi, city=city, temperature_weather=temperature_weather, temperature_open=temperature_open, avg=avg, dif=dif)
+    
 
     #store the seacrch history
     if "search_history" not in session:

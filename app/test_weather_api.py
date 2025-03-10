@@ -14,9 +14,17 @@ def get_weather_data(city):
     url = f"http://api.weatherapi.com/v1/current.json?key={api_key}&q={city}"
     response = requests.get(url)
     
-    if response.status_code != 200:
-        raise Exception("API call failed")
-    
+    response_json = response.json()
+    if "error" in response_json:
+        error_code = response_json["error"]["code"]
+
+        if error_code == 1006:
+            raise ValueError("City not found")
+        elif error_code == 1002:
+            raise KeyError("API key is invalid")
+        else:
+            raise Exception(f"API call failed: {response_json['error']['message']}")
+
     return response.json()
 
 # Test for a function
