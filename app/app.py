@@ -22,19 +22,21 @@ app.secret_key = os.getenv("SECRET_KEY")
 
 @app.route("/")
 def home():
-    nimi = "Jukka"
     city = ""
 
     temperature_weather = None
     temperature_open = None
     avg = None
     dif = None
-
+    #Search history, save result to session
+    if "search_history" not in session:
+        session["search_history"] = []
+    search_history = session.get("search_history", [])
     # Get the city from the input field
     city = request.args.get("city", "")
     #if city is empty:
     if city == "":
-        return render_template("home.html", nimi=nimi, city="Enter city", temperature_weather="", temperature_open="", avg="", dif="")
+        return render_template("home.html", city="Enter city", temperature_weather="", temperature_open="", avg="", dif="", search_history=search_history)
     #if city is not "":
     if city:
         # Try to get the weather data from the API, if there is a connection error, return an error message
@@ -67,7 +69,7 @@ def home():
         # If both API calls return City not found, city is not found
         if temperature_weather == "City not found" and temperature_open == "City not found":
             city = "City not found"
-            return render_template("home.html", nimi=nimi, city=city, temperature_weather="-", temperature_open="-", avg="-", dif="-")  
+            return render_template("home.html", city=city, temperature_weather="-", temperature_open="-", avg="-", dif="-", search_history=search_history)  
     
         # If temperature_weathet in not a number, return the OpenWeatherMap temperature as the average for search history
         try:
@@ -75,14 +77,14 @@ def home():
         except (ValueError, TypeError):
             avg = temperature_open
             dif = ""
-            return render_template("home.html", nimi=nimi, city=city, temperature_weather=temperature_weather, temperature_open=temperature_open, avg=avg, dif=dif)
+            return render_template("home.html", city=city, temperature_weather=temperature_weather, temperature_open=temperature_open, avg=avg, dif=dif, search_history=search_history)
         # If temperature_open in not a number, return the WeatherAPI temperature as the average for search history
         try:
             temperature_open = float(temperature_open)
         except (ValueError, TypeError):
             avg = temperature_weather
             dif = ""
-            return render_template("home.html", nimi=nimi, city=city, temperature_weather=temperature_weather, temperature_open=temperature_open, avg=avg, dif=dif)
+            return render_template("home.html", city=city, temperature_weather=temperature_weather, temperature_open=temperature_open, avg=avg, dif=dif, search_history=search_history)
 
         else:    
             # Count average of two temperatures
@@ -90,7 +92,30 @@ def home():
             # Return difference between two temperatures
             dif = round(temperature_difference(temperature_weather, temperature_open), 3)
             # Render the home.html template with the data
-            return render_template("home.html", nimi=nimi, city=city, temperature_weather=temperature_weather, temperature_open=temperature_open, avg=avg, dif=dif)
+
+                        #store the seacrch history
+
+            if city:
+                session["search_history"].insert(0, 
+                                        {"city":city,
+                                        "temperature_weather":temperature_weather,
+                                        "temperature_open":temperature_open, 
+                                        "avg":avg,
+                                        "dif":dif
+                })
+                session.modified = True
+
+
+            # Render the home.html template with the data
+            return render_template("home.html", 
+                                city=city, 
+                                temperature_weather=temperature_weather, 
+                                temperature_open=temperature_open, 
+                                avg=avg, 
+                                dif=dif,
+                                search_history=search_history)
+
+            #return render_template("home.html", nimi=nimi, city=city, temperature_weather=temperature_weather, temperature_open=temperature_open, avg=avg, dif=dif)
     
 
     #store the seacrch history
@@ -111,7 +136,6 @@ def home():
 
     # Render the home.html template with the data
     return render_template("home.html", 
-                           nimi=nimi,
                            city=city, 
                            temperature_weather=temperature_weather, 
                            temperature_open=temperature_open, 
