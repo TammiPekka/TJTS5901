@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 sys.path.append("app")
 from utils import average_temperature, temperature_difference
 from test_weather_api import get_weather_data
-from api_openw import get_open_data
+from api_openw import get_open_data, get_open_datalat
 
 app = Flask(__name__)
 load_dotenv()
@@ -45,6 +45,8 @@ def home():
             data_weather = get_weather_data(city)
             # Extract the temperature from the data
             temperature_weather = data_weather["current"]["temp_c"]
+            lon = data_weather["location"]["lon"]
+            lat = data_weather["location"]["lat"]
         # Catch the exceptions
         except ValueError as e:
             temperature_weather = "City not found"
@@ -53,18 +55,32 @@ def home():
         except Exception as e:
             temperature_weather = "Connection error with API"
 
+        #if lon and lat are not in the data from weatherAPI
+        if temperature_weather == "City not found" or temperature_weather == "API key is invalid" or temperature_weather == "Connection error with API":
+            try:
+                # Get weather data from OpenWeatherMap API, if there is a connection error put error message in temperature_open
+                data_open = get_open_data(city)
+                # Extract the temperature from the data
+                temperature_open = round(data_open["main"]["temp"] - 273.15, 2) # Convert temperature from Kelvin to Celsius #TODO check if there is better way to chance kelvin to celsius
+            # Catch the exceptions
+            except ValueError as e:
+                temperature_open = "City not found"
+            except KeyError as e:
+                temperature_open = "API key is invalid"
+            except Exception as e:
+                temperature_open = "Connection error with API"
+
+        #if lon and lat are in the data from weatherAPI #this is to make sure that we get the right city from same country
         try:
-            # Get weather data from OpenWeatherMap API, if there is a connection error put error message in temperature_open
-            data_open = get_open_data(city)
-            # Extract the temperature from the data
-            temperature_open = round(data_open["main"]["temp"] - 273.15, 2) # Convert temperature from Kelvin to Celsius #TODO check if there is better way to chance kelvin to celsius
-        # Catch the exceptions
+            data_open = get_open_datalat(lat, lon)
+            temperature_open = round(data_open["main"]["temp"], 2)
         except ValueError as e:
             temperature_open = "City not found"
         except KeyError as e:
             temperature_open = "API key is invalid"
         except Exception as e:
             temperature_open = "Connection error with API"
+
 
         # If both API calls return City not found, city is not found
         if temperature_weather == "City not found" and temperature_open == "City not found":
