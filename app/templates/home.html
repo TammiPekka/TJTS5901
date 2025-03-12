@@ -30,6 +30,7 @@
 
             <div id="weather-data">
                 <h2>City name: </h2><h2> {{ city }} </h2>
+                <p><small>{{ timestamp }}</small></p>
                 <div id="card">
    
                     <span>Source 1: Temperature from weather-api <span id="temp1">{{ temperature_weather }}</span> °C </span><br>
@@ -53,7 +54,9 @@
                     data-temp-open="{{ search.temperature_open }}"
                     data-avg="{{ search.avg }}"
                     data-dif="{{ search.dif }}">
-                        {{ search.city }}: {{ search.avg }}°C</li>
+                        {{ search.city }}: {{ search.avg }}°C<br>
+                        <small>Last updated: {{ search.timestamp }}</small>
+                    </li>
                 {% endfor %}
             </ul>
         </div>
