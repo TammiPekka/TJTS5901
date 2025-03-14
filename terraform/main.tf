@@ -4,13 +4,32 @@ provider "google" {
 }
 
 # Enable Cloud Monitoring
-resource "google_monitoring_notification_channel" "email" {
+resource "google_monitoring_notification_channel" "email1" {
   display_name = "Email Alerts"
   type         = "email"
   labels = {
     email_address = "ptjtammi@student.jyu.fi"  
   }
 }
+
+
+resource "google_monitoring_notification_channel" "email2" {
+  display_name = "Email Alerts"
+  type         = "email"
+  labels = {
+    email_address = "kaisa.m.jaaskelainen@student.savonia.fi"  
+  }
+}
+
+
+resource "google_monitoring_notification_channel" "email3" {
+  display_name = "Email Alerts"
+  type         = "email"
+  labels = {
+    email_address = "otto.j.loukkalahti@student.jyu.fi"  
+  }
+}
+
 
 # Create an Alert for High CPU Usage in GKE
 resource "google_monitoring_alert_policy" "high_cpu_alert" {
@@ -31,7 +50,9 @@ resource "google_monitoring_alert_policy" "high_cpu_alert" {
   }
 
   combiner             = "OR"
-  notification_channels = [google_monitoring_notification_channel.email.id]
+  notification_channels = [google_monitoring_notification_channel.email1.id,
+                           google_monitoring_notification_channel.email2.id,
+                           google_monitoring_notification_channel.email3.id]
 
   documentation {
     content = "High CPU usage detected on Flask container in GKE."
