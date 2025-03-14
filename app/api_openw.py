@@ -8,6 +8,7 @@ load_dotenv()
 # Load the API keys from the .env file
 OPEN_W_API_KEY = os.getenv("OPEN_W_API_KEY")
 
+
 # Function to get weather data from openweathermap API with city name
 def get_open_data(city):
     api_key = OPEN_W_API_KEY 
@@ -26,8 +27,9 @@ def get_open_data(city):
 
     return response.json()
 
+
 # This is to get weather data fron same location as weatherAPI, because there is many cities with same name around the world
-# Function to get weather data from openweathermap API if weatherAPI gets lon and lat data
+
 def get_open_datalat(lat, lon):
     api_key = OPEN_W_API_KEY 
     url_open = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={api_key}&units=metric"

@@ -31,6 +31,7 @@ def home():
     dif = None
     lon = None
     lat = None
+
     lonOpen = None
     latOpen = None
 
@@ -68,8 +69,10 @@ def home():
                 data_open = get_open_data(city)
                 # Extract the temperature from the data
                 temperature_open = round(data_open["main"]["temp"] - 273.15, 2) # Convert temperature from Kelvin to Celsius #TODO check if there is better way to chance kelvin to celsius
+
                 lonOpen = data_open["coord"]["lon"]
                 latOpen = data_open["coord"]["lat"]
+
             # Catch the exceptions
             except ValueError as e:
                 temperature_open = "City not found"
@@ -91,6 +94,7 @@ def home():
             except Exception as e: 
                 temperature_open = "Connection error with API THIS"
 
+
         #if lonOpen is not None, get the temperature from WeatherAPI using the lon and lat
         if lonOpen is not None:
             try:
@@ -102,6 +106,7 @@ def home():
                 temperature_weather
             except Exception as e:
                 temperature_weather = "Connection error with API"
+
 
         # If both API calls return City not found, city is not found
         if temperature_weather == "City not found" and temperature_open == "City not found":
@@ -121,12 +126,14 @@ def home():
                                         "temperature_weather":temperature_weather,
                                         "temperature_open":temperature_open, 
                                         "avg":avg,
+
                                         "dif":dif,
                                         "timestamp": datetime.now().strftime("%Y–%m–%d %H:%M:%S")
                 })
                 session.modified = True
 
             return render_template("home.html", city=city, temperature_weather=temperature_weather, temperature_open=temperature_open, avg=avg, dif=dif, search_history=search_history, timestamp=datetime.now().strftime("At %H:%M:%S UTC+2 on %d %B %Y"), lon=lon, lat=lat)
+
 
         # If temperature_open in not a number, return the WeatherAPI temperature as the average for search history
         try:
@@ -141,11 +148,14 @@ def home():
                                         "temperature_weather":temperature_weather,
                                         "temperature_open":temperature_open, 
                                         "avg":avg,
+
                                         "dif":dif,
                                         "timestamp": datetime.now().strftime("%Y–%m–%d %H:%M:%S")
                 })
                 session.modified = True
             return render_template("home.html", city=city, temperature_weather=temperature_weather, temperature_open=temperature_open, avg=avg, dif=dif, search_history=search_history,timestamp=datetime.now().strftime("At %H:%M:%S UTC+2 on %d %B %Y"), lon=lon, lat=lat)
+
+
 
         else:    
             # Count average of two temperatures
