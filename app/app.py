@@ -40,9 +40,9 @@ def home():
     search_history = session.get("search_history", [])
     # Get the city from the input field
     city = request.args.get("city", "")
-    #if city is empty:
+    #if city is empty, maps shows Helsinki:
     if city == "":
-        return render_template("home.html", city="Enter city", temperature_weather="", temperature_open="", avg="", dif="", search_history=search_history)
+        return render_template("home.html", city="Enter city", temperature_weather="", temperature_open="", avg="", dif="", search_history=search_history, lon=24.9384, lat=60.1695)
     #if city is not "":
     if city:
         # Try to get the weather data from the API, if there is a connection error, return an error message
@@ -106,7 +106,7 @@ def home():
         # If both API calls return City not found, city is not found
         if temperature_weather == "City not found" and temperature_open == "City not found":
             city = "City not found"
-            return render_template("home.html", city=city, temperature_weather="-", temperature_open="-", avg="-", dif="-", search_history=search_history)  
+            return render_template("home.html", city=city, temperature_weather="-", temperature_open="-", avg="-", dif="-", search_history=search_history, timestamp=datetime.now().strftime("At %H:%M:%S UTC+2 on %d %B %Y"), lon=lon, lat=lat)  
     
         # If temperature_weathet in not a number, return the OpenWeatherMap temperature as the average for search history
         try:
@@ -126,7 +126,7 @@ def home():
                 })
                 session.modified = True
 
-            return render_template("home.html", city=city, temperature_weather=temperature_weather, temperature_open=temperature_open, avg=avg, dif=dif, search_history=search_history)
+            return render_template("home.html", city=city, temperature_weather=temperature_weather, temperature_open=temperature_open, avg=avg, dif=dif, search_history=search_history, timestamp=datetime.now().strftime("At %H:%M:%S UTC+2 on %d %B %Y"), lon=lon, lat=lat)
 
         # If temperature_open in not a number, return the WeatherAPI temperature as the average for search history
         try:
@@ -145,7 +145,7 @@ def home():
                                         "timestamp": datetime.now().strftime("%Y–%m–%d %H:%M:%S")
                 })
                 session.modified = True
-            return render_template("home.html", city=city, temperature_weather=temperature_weather, temperature_open=temperature_open, avg=avg, dif=dif, search_history=search_history,timestamp=datetime.now().strftime("At %H:%M:%S UTC+2 on %d %B %Y"))
+            return render_template("home.html", city=city, temperature_weather=temperature_weather, temperature_open=temperature_open, avg=avg, dif=dif, search_history=search_history,timestamp=datetime.now().strftime("At %H:%M:%S UTC+2 on %d %B %Y"), lon=lon, lat=lat)
 
         else:    
             # Count average of two temperatures
@@ -176,7 +176,9 @@ def home():
                                 avg=avg, 
                                 dif=dif,
                                 search_history=search_history,
-                                timestamp=datetime.now().strftime("At %H:%M:%S UTC+2 on %d %B %Y"))
+                                timestamp=datetime.now().strftime("At %H:%M:%S UTC+2 on %d %B %Y"),
+                                lon=lon,
+                                lat=lat)
 
             #return render_template("home.html", nimi=nimi, city=city, temperature_weather=temperature_weather, temperature_open=temperature_open, avg=avg, dif=dif)
     
@@ -206,7 +208,9 @@ def home():
                            avg=avg, 
                            dif=dif,
                            search_history=search_history,
-                           timestamp=datetime.now().strftime("At %H:%M:%S UTC+2 on %d %B %Y"))
+                           timestamp=datetime.now().strftime("At %H:%M:%S UTC+2 on %d %B %Y"),
+                           lon=lon,
+                           lat=lat)
 
 @app.route("/home")
 def health():
