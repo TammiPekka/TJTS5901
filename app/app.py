@@ -240,7 +240,7 @@ def get_cities():
         return jsonify([])
 
     api_url = f"https://api.weatherapi.com/v1/search.json?key={WEATHER_API_KEY}&q={query}"
-    response = requests.get(api_url)
+    response = requests.get(api_url, timeout=5)
 
     if response.status_code == 200:
         cities = response.json()
