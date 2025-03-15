@@ -1,20 +1,27 @@
 # Use an official Python runtime as a parent image
-FROM python:3.9-slim
+FROM python:3.9-slim AS builder
 
 # Set the working directory in the container
 WORKDIR /usr/src/app
 
-# Copy the requirements file into the container
+# Copy only the dependencies file to take advantage of Docker caching
 COPY requirements.txt .
 
-# Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+# Install dependencies in a temporary layer
+RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
 
-# Copy the current directory contents into the container
+FROM python:3.9-slim
+
+WORKDIR /usr/src/app
+
+# Copy only the necessary runtime dependencies from the build stage
+COPY --from=builder /install /usr/local
+
+# Copy the application code
 COPY . .
 
-# Make port 5000 available to the world outside this container
+# Expose the application port
 EXPOSE 5000
 
-# Run the application
+# Command to run the application
 CMD ["python", "app/app.py"]

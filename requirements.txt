@@ -1,5 +1,5 @@
 Flask==2.3.2
-requests==2.31.0
+requests==2.32.0
 pytest==6.2.5
 pytest-mock==3.6.1
 Werkzeug==3.0.6
