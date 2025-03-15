@@ -12,7 +12,7 @@ WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
 def get_weather_data(city):
     api_key = WEATHER_API_KEY 
     url = f"http://api.weatherapi.com/v1/current.json?key={api_key}&q={city}"
-    response = requests.get(url)
+    response = requests.get(url, timeout=5) 
     
     response_json = response.json()
     if "error" in response_json:
@@ -33,7 +33,7 @@ def get_weather_data(city):
 def get_weather_datalat(lat, lon):
     api_key = WEATHER_API_KEY 
     url = f"http://api.weatherapi.com/v1/current.json?key={api_key}&q={lat},{lon}"
-    response = requests.get(url)
+    response = requests.get(url, timeout=5)
     
     response_json = response.json()
     if "error" in response_json:
