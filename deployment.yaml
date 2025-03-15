@@ -27,7 +27,14 @@ spec:
           volumeMounts:
             - name: gcp-secret-volume
               mountPath: "/secrets"
-              readOnly: true
+              readOnly: true  
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
       volumes:
         - name: gcp-secret-volume
           secret:
