@@ -21,7 +21,7 @@
             <div class="search-container">
                 <p>Enter a city name to get the weather data</p>
                 <form id="search-form" action="#">
-                    <input type="text" id="search" name="city" placeholder="City name">
+                    <input type="text" id="search"  autocomplete="off" name="city" placeholder="City name">
                     <button type="submit">Get weather</button>
                     <ul id="suggestions"></ul>
                 </form>
@@ -67,7 +67,10 @@
                     data-temp-weather="{{ search.temperature_weather }}"
                     data-temp-open="{{ search.temperature_open }}"
                     data-avg="{{ search.avg }}"
-                    data-dif="{{ search.dif }}">
+                    data-dif="{{ search.dif }}"
+                    data-lat="{{ search.lat }}"
+                    data-lon="{{ search.lon }}"
+                    >
                         {{ search.city }}: {{ search.avg }}°C<br>
                         <small>Last updated: {{ search.timestamp }}</small>
                     </li>
@@ -78,18 +81,7 @@
     </div>
 
     <script src="static/scripts.js"></script>
-  
-    <script>
-         document.addEventListener("DOMContentLoaded", function () {
-            const refreshButton = document.getElementById("refresh-btn");
-
-            if (refreshButton) {
-                refreshButton.addEventListener("click", function () {
-                    location.reload();  // Update the page
-               });
-           }
-      });
-    </script>        
+    
 
 </body>
 </html>

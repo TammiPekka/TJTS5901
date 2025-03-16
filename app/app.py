@@ -155,7 +155,9 @@ def home():
                                         "avg":avg,
 
                                         "dif":dif,
-                                        "timestamp": datetime.now(helsinki_tz).strftime("%Y–%m–%d %H:%M:%S")
+                                        "timestamp": datetime.now(helsinki_tz).strftime("%Y–%m–%d %H:%M:%S"),
+                                        "lat":lat,
+                                        "lon":lon
                 })
                 session.modified = True
             return render_template("home.html", city=city, temperature_weather=temperature_weather, temperature_open=temperature_open, avg=avg, dif=dif, search_history=search_history,timestamp=datetime.now(helsinki_tz).strftime("At %H:%M:%S UTC+2 on %d %B %Y"), lon=lon, lat=lat, lonOpen=lonOpen, latOpen=latOpen)
@@ -172,16 +174,36 @@ def home():
                         #store the seacrch history
 
             if city:
-                session["search_history"].insert(0, 
-                                        {"city":city,
-                                        "temperature_weather":temperature_weather,
-                                        "temperature_open":temperature_open, 
-                                        "avg":avg,
-                                        "dif":dif,
-                                        "timestamp":datetime.now(helsinki_tz).strftime("%Y–%m–%d %H:%M:%S")
-                })
+                # Check if the city already exists in the search history
+                existing_city = next((item for item in session["search_history"] if item["city"].lower() == city.lower()), None)
+                if existing_city:
+                    # Remove the existing city from its current position
+                    session["search_history"].remove(existing_city)
+                    # Update the existing city's data
+                    existing_city.update({
+                        "temperature_weather": temperature_weather,
+                        "temperature_open": temperature_open,
+                        "avg": avg,
+                        "dif": dif,
+                        "timestamp": datetime.now(helsinki_tz).strftime("%Y–%m–%d %H:%M:%S"),
+                        "lat": lat,
+                        "lon": lon
+                    })
+                    # Insert the updated city data at the top of the list
+                    session["search_history"].insert(0, existing_city)
+                else:
+                    # Insert new city data
+                    session["search_history"].insert(0, 
+                                            {"city": city,
+                                            "temperature_weather": temperature_weather,
+                                            "temperature_open": temperature_open, 
+                                            "avg": avg,
+                                            "dif": dif,
+                                            "timestamp": datetime.now(helsinki_tz).strftime("%Y–%m–%d %H:%M:%S"),
+                                            "lat":lat,
+                                            "lon":lon
+                    })
                 session.modified = True
-
 
             # Render the home.html template with the data
             return render_template("home.html", 
@@ -210,7 +232,9 @@ def home():
                                  "temperature_open":temperature_open, 
                                  "avg":avg,
                                  "dif":dif,
-                                 "timestamp":datetime.now(helsinki_tz).strftime("%Y–%m–%d %H:%M:%S")
+                                 "timestamp":datetime.now(helsinki_tz).strftime("%Y–%m–%d %H:%M:%S"),
+                                 "lat":lat,
+                                 "lon":lon
         })
         session.modified = True
 
@@ -230,6 +254,9 @@ def home():
                            lat=lat,
                            lonOpen=lonOpen,
                            latOpen=latOpen)
+
+def search_history():
+    pass
 
 @app.route("/home")
 def health():
