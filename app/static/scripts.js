@@ -72,20 +72,34 @@ document.addEventListener("DOMContentLoaded", function () {
                 let tempOpen = clickedElement.getAttribute("data-temp-open");
                 let avg = clickedElement.getAttribute("data-avg");
                 let dif = clickedElement.getAttribute("data-dif");
+                let lat = clickedElement.getAttribute("data-lat"); 
+                let lon = clickedElement.getAttribute("data-lon");
+                updateWeatherDisplay(cityName, tempWeather, tempOpen, avg, dif, lat, lon);
 
-                updateWeatherDisplay(cityName, tempWeather, tempOpen, avg, dif);
+                
             }
         });
     }
 
     // Function to Update Weather Display without Reloading
-    function updateWeatherDisplay(city, tempWeather, tempOpen, avg, dif) {
+    function updateWeatherDisplay(city, tempWeather, tempOpen, avg, dif, lat, lon) {
         document.getElementById("city-name").textContent = city;
         document.getElementById("temp1").textContent = tempWeather;
         document.getElementById("temp2").textContent = tempOpen;
         document.getElementById("avg1").textContent = avg;
         document.getElementById("dif1").textContent = dif;
+        updateMap(lat, lon);
     }
+
+    function updateMap(lat, lon) {
+
+        const mapImage = document.getElementById("map-image"); 
+        if (mapImage) {
+            console.log("here i am", lon, lat);
+            mapImage.src = `https://static-maps.yandex.ru/1.x/?ll=${lon},${lat}&z=10&size=600,400&l=map&lang=en_US`;
+        }
+    }
+    
 });
 
 // Handle removing previous searches

@@ -155,7 +155,9 @@ def home():
                                         "avg":avg,
 
                                         "dif":dif,
-                                        "timestamp": datetime.now(helsinki_tz).strftime("%Y–%m–%d %H:%M:%S")
+                                        "timestamp": datetime.now(helsinki_tz).strftime("%Y–%m–%d %H:%M:%S"),
+                                        "lat":lat,
+                                        "lon":lon
                 })
                 session.modified = True
             return render_template("home.html", city=city, temperature_weather=temperature_weather, temperature_open=temperature_open, avg=avg, dif=dif, search_history=search_history,timestamp=datetime.now(helsinki_tz).strftime("At %H:%M:%S UTC+2 on %d %B %Y"), lon=lon, lat=lat)
@@ -183,7 +185,9 @@ def home():
                         "temperature_open": temperature_open,
                         "avg": avg,
                         "dif": dif,
-                        "timestamp": datetime.now(helsinki_tz).strftime("%Y–%m–%d %H:%M:%S")
+                        "timestamp": datetime.now(helsinki_tz).strftime("%Y–%m–%d %H:%M:%S"),
+                        "lat": lat,
+                        "lon": lon
                     })
                     # Insert the updated city data at the top of the list
                     session["search_history"].insert(0, existing_city)
@@ -195,7 +199,9 @@ def home():
                                             "temperature_open": temperature_open, 
                                             "avg": avg,
                                             "dif": dif,
-                                            "timestamp": datetime.now(helsinki_tz).strftime("%Y–%m–%d %H:%M:%S")
+                                            "timestamp": datetime.now(helsinki_tz).strftime("%Y–%m–%d %H:%M:%S"),
+                                            "lat":lat,
+                                            "lon":lon
                     })
                 session.modified = True
 
@@ -224,7 +230,9 @@ def home():
                                  "temperature_open":temperature_open, 
                                  "avg":avg,
                                  "dif":dif,
-                                 "timestamp":datetime.now(helsinki_tz).strftime("%Y–%m–%d %H:%M:%S")
+                                 "timestamp":datetime.now(helsinki_tz).strftime("%Y–%m–%d %H:%M:%S"),
+                                 "lat":lat,
+                                 "lon":lon
         })
         session.modified = True
 

@@ -46,7 +46,7 @@
             </div>
 
             <div id="map">
-                <img src="https://static-maps.yandex.ru/1.x/?ll={{ lon }},{{ lat }}&z=10&size=600,400&l=map&lang=en_US" alt="Kartta">
+                <img id="map-image" src="https://static-maps.yandex.ru/1.x/?ll={{ lon }},{{ lat }}&z=10&size=600,400&l=map&lang=en_US" alt="Kartta">
             </div>
         </div>
 
@@ -61,7 +61,10 @@
                     data-temp-weather="{{ search.temperature_weather }}"
                     data-temp-open="{{ search.temperature_open }}"
                     data-avg="{{ search.avg }}"
-                    data-dif="{{ search.dif }}">
+                    data-dif="{{ search.dif }}"
+                    data-lat="{{ search.lat }}"
+                    data-lon="{{ search.lon }}"
+                    >
                         {{ search.city }}: {{ search.avg }}°C<br>
                         <small>Last updated: {{ search.timestamp }}</small>
                     </li>
