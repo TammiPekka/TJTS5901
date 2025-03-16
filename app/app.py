@@ -27,8 +27,9 @@ app.secret_key = os.getenv("SECRET_KEY")
 
 @app.route("/")
 def home():
-    city = ""
+    print("Current time in Flask:", datetime.now(helsinki_tz)) # Debug print
 
+    city = ""
     temperature_weather = None
     temperature_open = None
     avg = None
