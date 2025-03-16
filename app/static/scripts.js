@@ -107,14 +107,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 .catch(error => console.error("Error clearing history:", error));
         });
     }
-});
-
-document.addEventListener("DOMContentLoaded", function () {
+    //refresh data that is shown on the page
     const refreshButton = document.getElementById("refresh-btn");
 
     if (refreshButton) {
         refreshButton.addEventListener("click", function () {
-            location.reload();  // Update the page
-       });
-   }
+            const city = document.getElementById("city-name").textContent.trim();
+            if (!city || city === "Enter city" || city === "City not found") {
+                alert("No city selected for refresh.");
+                return;
+            }
+
+            // Reload the page and append the city to the URL
+            window.location.href = `/?city=${encodeURIComponent(city)}`;
+        });
+    }
 });

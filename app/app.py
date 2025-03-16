@@ -199,7 +199,6 @@ def home():
                     })
                 session.modified = True
 
-
             # Render the home.html template with the data
             return render_template("home.html", 
                                 city=city, 
