@@ -108,3 +108,13 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    const refreshButton = document.getElementById("refresh-btn");
+
+    if (refreshButton) {
+        refreshButton.addEventListener("click", function () {
+            location.reload();  // Update the page
+       });
+   }
+});
