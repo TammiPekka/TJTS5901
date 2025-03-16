@@ -26,19 +26,25 @@
                     <ul id="suggestions"></ul>
                 </form>
             </div>
-            
+           
 
             <div id="weather-data">
-                <h2>City name: </h2><h2> {{ city }} </h2>
+                <div class="weather-header">
+                    <h2>City name:</h2>
+                    <button type="button" id="refresh-btn">Refresh</button>
+                </div>
+                <div class="city-container">
+                    <h2 id="city-name">{{ city }}</h2>
+                </div>
                 <p><small>{{ timestamp }}</small></p>
                 <div id="card">
-   
                     <span>Source 1: Temperature from weather-api <span id="temp1">{{ temperature_weather }}</span> °C </span><br>
                     <span>Source 2: Temperature from openweathermap-api <span id="temp2">{{ temperature_open }}</span> °C </span><br>
                     <span>Average from both: <span id="avg1">{{ avg }}</span> °C</span><br>
                     <span>Difference between both: <span id="dif1">{{ dif }}</span> °C</span>
                 </div>
             </div>
+
             <div id="map">
                 <img src="https://static-maps.yandex.ru/1.x/?ll={{ lon }},{{ lat }}&z=10&size=600,400&l=map&lang=en_US" alt="Kartta">
             </div>
@@ -66,7 +72,18 @@
     </div>
 
     <script src="static/scripts.js"></script>
+  
+    <script>
+         document.addEventListener("DOMContentLoaded", function () {
+            const refreshButton = document.getElementById("refresh-btn");
 
+            if (refreshButton) {
+                refreshButton.addEventListener("click", function () {
+                    location.reload();  // Update the page
+               });
+           }
+      });
+    </script>        
 
 </body>
 </html>

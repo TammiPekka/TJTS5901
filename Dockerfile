@@ -8,14 +8,14 @@ WORKDIR /usr/src/app
 COPY requirements.txt .
 
 # Install dependencies in a temporary layer
-RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 FROM python:3.9-slim
 
 WORKDIR /usr/src/app
 
-# Copy only the necessary runtime dependencies from the build stage
-COPY --from=builder /install /usr/local
+# Copy all installed libraries and dependencies from the builder stage
+COPY --from=builder /usr/local /usr/local
 
 # Copy the application code
 COPY . .

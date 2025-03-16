@@ -6,6 +6,10 @@ import jinja2
 import os
 from dotenv import load_dotenv
 from datetime import datetime   #Timestamp added
+import pytz
+
+# Time in Helsinki
+helsinki_tz = pytz.timezone('Europe/Helsinki')
 
 sys.path.append("app")
 from utils import average_temperature, temperature_difference
@@ -23,8 +27,9 @@ app.secret_key = os.getenv("SECRET_KEY")
 
 @app.route("/")
 def home():
-    city = ""
+    print("Current time in Flask:", datetime.now(helsinki_tz)) # Debug print
 
+    city = ""
     temperature_weather = None
     temperature_open = None
     avg = None
@@ -111,7 +116,7 @@ def home():
         # If both API calls return City not found, city is not found
         if temperature_weather == "City not found" and temperature_open == "City not found":
             city = "City not found"
-            return render_template("home.html", city=city, temperature_weather="-", temperature_open="-", avg="-", dif="-", search_history=search_history, timestamp=datetime.now().strftime("At %H:%M:%S UTC+2 on %d %B %Y"), lon=lon, lat=lat)  
+            return render_template("home.html", city=city, temperature_weather="-", temperature_open="-", avg="-", dif="-", search_history=search_history, timestamp=datetime.now(helsinki_tz).strftime("At %H:%M:%S UTC+2 on %d %B %Y"), lon=lon, lat=lat)  
     
         # If temperature_weathet in not a number, return the OpenWeatherMap temperature as the average for search history
         try:
@@ -128,11 +133,11 @@ def home():
                                         "avg":avg,
 
                                         "dif":dif,
-                                        "timestamp": datetime.now().strftime("%Y–%m–%d %H:%M:%S")
+                                        "timestamp": datetime.now(helsinki_tz).strftime("%Y–%m–%d %H:%M:%S")
                 })
                 session.modified = True
 
-            return render_template("home.html", city=city, temperature_weather=temperature_weather, temperature_open=temperature_open, avg=avg, dif=dif, search_history=search_history, timestamp=datetime.now().strftime("At %H:%M:%S UTC+2 on %d %B %Y"), lon=lon, lat=lat)
+            return render_template("home.html", city=city, temperature_weather=temperature_weather, temperature_open=temperature_open, avg=avg, dif=dif, search_history=search_history, timestamp=datetime.now(helsinki_tz).strftime("At %H:%M:%S UTC+2 on %d %B %Y"), lon=lon, lat=lat)
 
 
         # If temperature_open in not a number, return the WeatherAPI temperature as the average for search history
@@ -150,10 +155,10 @@ def home():
                                         "avg":avg,
 
                                         "dif":dif,
-                                        "timestamp": datetime.now().strftime("%Y–%m–%d %H:%M:%S")
+                                        "timestamp": datetime.now(helsinki_tz).strftime("%Y–%m–%d %H:%M:%S")
                 })
                 session.modified = True
-            return render_template("home.html", city=city, temperature_weather=temperature_weather, temperature_open=temperature_open, avg=avg, dif=dif, search_history=search_history,timestamp=datetime.now().strftime("At %H:%M:%S UTC+2 on %d %B %Y"), lon=lon, lat=lat)
+            return render_template("home.html", city=city, temperature_weather=temperature_weather, temperature_open=temperature_open, avg=avg, dif=dif, search_history=search_history,timestamp=datetime.now(helsinki_tz).strftime("At %H:%M:%S UTC+2 on %d %B %Y"), lon=lon, lat=lat)
 
 
 
@@ -173,7 +178,7 @@ def home():
                                         "temperature_open":temperature_open, 
                                         "avg":avg,
                                         "dif":dif,
-                                        "timestamp":datetime.now().strftime("%Y–%m–%d %H:%M:%S")
+                                        "timestamp":datetime.now(helsinki_tz).strftime("%Y–%m–%d %H:%M:%S")
                 })
                 session.modified = True
 
@@ -186,7 +191,7 @@ def home():
                                 avg=avg, 
                                 dif=dif,
                                 search_history=search_history,
-                                timestamp=datetime.now().strftime("At %H:%M:%S UTC+2 on %d %B %Y"),
+                                timestamp=datetime.now(helsinki_tz).strftime("At %H:%M:%S UTC+2 on %d %B %Y"),
                                 lon=lon,
                                 lat=lat)
 
@@ -203,7 +208,7 @@ def home():
                                  "temperature_open":temperature_open, 
                                  "avg":avg,
                                  "dif":dif,
-                                 "timestamp":datetime.now().strftime("%Y–%m–%d %H:%M:%S")
+                                 "timestamp":datetime.now(helsinki_tz).strftime("%Y–%m–%d %H:%M:%S")
         })
         session.modified = True
 
@@ -218,7 +223,7 @@ def home():
                            avg=avg, 
                            dif=dif,
                            search_history=search_history,
-                           timestamp=datetime.now().strftime("At %H:%M:%S UTC+2 on %d %B %Y"),
+                           timestamp=datetime.now(helsinki_tz).strftime("At %H:%M:%S UTC+2 on %d %B %Y"),
                            lon=lon,
                            lat=lat)
 
