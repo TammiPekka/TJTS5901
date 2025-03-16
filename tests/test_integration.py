@@ -54,4 +54,27 @@ def test_open_api_ok():
     assert "temp" in data["main"]  # Ensures that the data includes the temperature ('temp') in the main weather details
     assert "name" in data  # Ensures that 'name' information is present in the returned data
     assert data["name"] == city  # Ensures that the returned city matches the input
+
+#Testing the app
+def test_app():
+    """Test if the app is running"""
+    with app.test_client() as client:
+        response = client.get("/")
+        assert b"24.9384" in response.data
+
+#Testing the app with a city
+def test_app_city():
+    """Test if the app is running with a city"""
+    with app.test_client() as client:
+        response = client.get("/?city=London#")
+        assert b"London" in response.data
+
+#Testing the app with a city that does not exist
+def test_app_city_fail():
+    """Test if the app is running with a city that does not exist"""
+    with app.test_client() as client:
+        response = client.get("/?city=L#")
+        assert b"City not found" in response.data
+
+
     
