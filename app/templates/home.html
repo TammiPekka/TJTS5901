@@ -47,11 +47,11 @@
 
             <div id="map">
                 {% if lon and lat %}
-                    <img src="https://static-maps.yandex.ru/1.x/?ll={{ lon }},{{ lat }}&z=10&size=600,400&l=map&lang=en_US" alt="Kartta">
+                    <img id="map-image" src="https://static-maps.yandex.ru/1.x/?ll={{ lon }},{{ lat }}&z=10&size=600,400&l=map&lang=en_US" alt="Kartta">
                 {% elif lonOpen and latOpen %}
-                    <img src="https://static-maps.yandex.ru/1.x/?ll={{ lonOpen }},{{ latOpen }}&z=10&size=600,400&l=map&lang=en_US" alt="Kartta">
+                    <img id="map-image" src="https://static-maps.yandex.ru/1.x/?ll={{ lonOpen }},{{ latOpen }}&z=10&size=600,400&l=map&lang=en_US" alt="Kartta">
                 {% else %}
-                    <img src="{{ url_for('static', filename='cat.svg') }}" alt="Static Image">
+                    <img id="map-image" src="{{ url_for('static', filename='cat.svg') }}" alt="Static Image">
                 {% endif %}
             </div>
         </div>

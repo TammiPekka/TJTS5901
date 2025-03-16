@@ -95,7 +95,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const mapImage = document.getElementById("map-image"); 
         if (mapImage) {
-            console.log("here i am", lon, lat);
             mapImage.src = `https://static-maps.yandex.ru/1.x/?ll=${lon},${lat}&z=10&size=600,400&l=map&lang=en_US`;
         }
     }
