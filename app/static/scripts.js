@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Function to Update Weather Display without Reloading
     function updateWeatherDisplay(city, tempWeather, tempOpen, avg, dif) {
-        document.querySelector("#weather-data h2:nth-of-type(2)").textContent = city;
+        document.getElementById("city-name").textContent = city;
         document.getElementById("temp1").textContent = tempWeather;
         document.getElementById("temp2").textContent = tempOpen;
         document.getElementById("avg1").textContent = avg;
