@@ -56,7 +56,7 @@ def home():
             # Get weather data from WeatherAPI, if there is a connection error put error message in temperature_weather
             data_weather = get_weather_data(city)
             # Extract the temperature from the data
-            temperature_weather = data_weather["current"]["temp_c"]
+            temperature_weather = round(data_weather["current"]["temp_c"],1)
             lon = data_weather["location"]["lon"]
             lat = data_weather["location"]["lat"]
         # Catch the exceptions
@@ -73,7 +73,7 @@ def home():
                 # Get weather data from OpenWeatherMap API, if there is a connection error put error message in temperature_open
                 data_open = get_open_data(city)
                 # Extract the temperature from the data
-                temperature_open = round(data_open["main"]["temp"] - 273.15, 2) # Convert temperature from Kelvin to Celsius #TODO check if there is better way to chance kelvin to celsius
+                temperature_open = round(data_open["main"]["temp"] - 273.15, 1) # Convert temperature from Kelvin to Celsius #TODO check if there is better way to chance kelvin to celsius
 
                 lonOpen = data_open["coord"]["lon"]
                 latOpen = data_open["coord"]["lat"]
@@ -91,7 +91,7 @@ def home():
         if lon is not None:
             try:
                 data_open = get_open_datalat(lat, lon)
-                temperature_open = round(data_open["main"]["temp"], 2)
+                temperature_open = round(data_open["main"]["temp"], 1)
             except ValueError as e:
                 temperature_open = "City not found"
             except KeyError as e:
@@ -104,7 +104,7 @@ def home():
         if lonOpen is not None:
             try:
                 data_weather = get_weather_datalat(latOpen,lonOpen)
-                temperature_weather = data_weather["current"]["temp_c"]
+                temperature_weather = round(data_weather["current"]["temp_c"],1)
             except ValueError as e:
                 temperature_weather = "City not found"
             except KeyError as e:
@@ -166,9 +166,9 @@ def home():
 
         else:    
             # Count average of two temperatures
-            avg = round(average_temperature(temperature_weather, temperature_open), 3)
+            avg = round(average_temperature(temperature_weather, temperature_open), 1)
             # Return difference between two temperatures
-            dif = round(temperature_difference(temperature_weather, temperature_open), 3)
+            dif = round(temperature_difference(temperature_weather, temperature_open), 1)
             # Render the home.html template with the data
 
                         #store the seacrch history
